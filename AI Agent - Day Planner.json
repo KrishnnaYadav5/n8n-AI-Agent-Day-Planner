@@ -1,0 +1,251 @@
+{
+  "name": "AI Agent - Day Planner",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -400,
+        -48
+      ],
+      "id": "af61828a-c5fc-4a22-be7f-5b52d6923344",
+      "name": "When chat message received",
+      "webhookId": "ad7b627a-00b4-48c2-b604-870cc8558fb7"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "=You are assisting the user with managing their schedule.\nToday is {{ $now.format('dddd, MMMM D, YYYY') }} and the current time is {{ $now.format('h:mm A') }}.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        72,
+        -48
+      ],
+      "id": "4ba3403c-9e0e-4301-9793-ffac71b93ba6",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -320,
+        176
+      ],
+      "id": "259a30e8-5a0e-4309-98f4-59b9261cc18d",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "Ap8dnjHZOYJarMn1",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -128,
+        176
+      ],
+      "id": "9c66f2f9-7871-4f91-b9ef-4e7c15db9fdc",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "15bfc9757cc585ee27c5bc74530f6bbacee2ddf4736a29def836faf591308e0c@group.calendar.google.com",
+          "mode": "list",
+          "cachedResultName": "AI Agent Day Planner"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        48,
+        176
+      ],
+      "id": "a1ebceed-2b23-4b4d-bd91-f7a782e52a46",
+      "name": "Get many events in Google Calendar",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "GbX5a1WnD1r43UyV",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "crystalmindacademy@gmail.com",
+        "subject": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Subject', ``, 'string') }}",
+        "message": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        224,
+        176
+      ],
+      "id": "5ee71ff9-0d3d-4571-9c78-ce8a2bf8c865",
+      "name": "Send a message in Gmail",
+      "webhookId": "897a14ca-bd37-4bf0-b758-7164b246d38a",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "tp8hCD7ZcnPERZPs",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "5361942101",
+        "text": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Text', ``, 'string') }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTool",
+      "typeVersion": 1.2,
+      "position": [
+        400,
+        176
+      ],
+      "id": "ee691ff3-3051-46f4-8cd6-c6b9772b8fb5",
+      "name": "Send a text message in Telegram",
+      "webhookId": "f79dc00c-6021-4b5d-ad00-0f79838c1d37",
+      "credentials": {
+        "telegramApi": {
+          "id": "830H8x0lNjWNOecp",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolSerpApi",
+      "typeVersion": 1,
+      "position": [
+        544,
+        176
+      ],
+      "id": "749dad9b-cd8d-426c-a838-81b7e34f9087",
+      "name": "SerpAPI",
+      "credentials": {
+        "serpApi": {
+          "id": "BDVcsi57gRMErf76",
+          "name": "SerpAPI account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many events in Google Calendar": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message in Gmail": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message in Telegram": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SerpAPI": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "6d3a9cbb-77c9-459f-b171-52d1ccd38bb8",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ac144dfb65310c7b55d5ee820c762b3c940d22044b8aace4e3e334f07f493fe9"
+  },
+  "id": "bSFLMjCMJrgpREU7",
+  "tags": []
+}
